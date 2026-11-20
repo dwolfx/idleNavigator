@@ -23,7 +23,9 @@
 - [x] CRUD completo de instâncias (criar, editar, remover) com validação/normalização de URL ([src/core/url.ts](src/core/url.ts)).
 - [x] Persistência local de estado em JSON ([electron/store.ts](electron/store.ts)).
 - [x] Detecção automática de Edge, Chrome e Brave instalados no Windows ([electron/browserLauncher.ts](electron/browserLauncher.ts)).
-- [x] Abertura individual de instância ou abertura em lote **"Abrir todas em Grid"** calculando a área útil do monitor ([src/core/layout.ts](src/core/layout.ts)).
+- [x] Abertura individual de instância ou abertura em lote **"Abrir todas em Grid"** com alinhamento real via Win32 (`SetWindowPos` + `SetProcessDPIAware` em [electron/windowArranger.ts](electron/windowArranger.ts)).
+- [x] Botão **"Organizar Grid"** (no painel e na bandeja) para realinhar janelas já abertas do IdleNavigator em 1 clique, sem tocar no navegador pessoal.
+- [x] Empacotamento Windows (`.exe` portátil e instalador NSIS) configurado com `electron-builder` (`npm run dist`) e ícone próprio em `build/icon.png`.
 - [x] Limpeza de sessão/cookies individual (logout forçado removendo apenas o `slot-<id>`).
 - [x] Minimizar para a bandeja do Windows (System Tray) com menu rápido.
 - [x] Atalhos de teclado: `Ctrl + N` (nova instância) e `Ctrl + Enter` (abrir todas em Grid).
@@ -38,10 +40,9 @@
 ## 2. O que falta fazer (Backlog priorizado)
 
 ### Curto prazo (prioridade alta)
-- [ ] **Validar em uso real:** testar abrir 2+ contas do jogo no Edge via IdleNavigator, confirmar passagem do Cloudflare Turnstile / Login com Google e persistência do login após fechar e reabrir.
-- [ ] **Gerar executável `.exe` para Windows (`electron-builder`):**
-  - Configurar build NSIS (instalador) e/ou portátil (`.exe` único) + ícone `.ico` próprio do IdleNavigator para abrir sem terminal.
-- [ ] **Botão "Reorganizar Grid" em janelas já abertas:** hoje o `--window-position` / `--window-size` posiciona ao abrir, mas se o usuário mover janelas depois, um comando PowerShell/Win32 (`MoveWindow`) pode reencaixar todas no Grid instantaneamente.
+- [x] **Validar em uso real:** confirmado rodando com Edge oficial, passando Google OAuth e Cloudflare Turnstile.
+- [x] **Gerar executável `.exe` para Windows (`electron-builder`):** configurado `npm run dist` gerando `release/IdleNavigator-Portable.exe` e instalador NSIS.
+- [x] **Botão "Organizar Grid" em janelas já abertas:** implementado via Win32 `SetWindowPos` filtrando apenas janelas do `--user-data-dir` do IdleNavigator.
 
 ### Médio prazo (evoluções úteis, sem feature creep)
 - [ ] **Workspaces / Grupos:** separar conjuntos de contas por jogo (ex: "Jogo A — 3 contas", "Jogo B — 2 contas") para abrir cada grupo com 1 clique.

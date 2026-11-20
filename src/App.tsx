@@ -62,7 +62,19 @@ export function App() {
     if (!res.ok && res.error) {
       showFeedback('error', res.error);
     } else {
-      showFeedback('success', 'Abrindo todas as instâncias organizadas em Grid.');
+      showFeedback('success', 'Abrindo e alinhando todas as instâncias em Grid.');
+    }
+  }, [showFeedback]);
+
+  const handleArrangeGrid = useCallback(async () => {
+    const res = await window.idleDock.arrangeGrid();
+    if (!res.ok && res.error) {
+      showFeedback('error', res.error);
+    } else {
+      showFeedback(
+        'success',
+        `${res.arrangedCount ?? 0} janela(s) organizada(s) no Grid com sucesso.`,
+      );
     }
   }, [showFeedback]);
 
@@ -173,16 +185,28 @@ export function App() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {state.instances.length > 0 && (
-            <button
-              type="button"
-              onClick={() => void handleLaunchAll()}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-surface-overlay px-3.5 py-2 text-xs font-medium text-content-primary transition hover:bg-surface-hover cursor-pointer"
-            >
-              <Grid2x2 className="h-4 w-4 text-accent-hover" strokeWidth={1.75} />
-              Abrir todas em Grid
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => void handleArrangeGrid()}
+                title="Alinha todas as janelas já abertas pelo IdleNavigator em Grid"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-surface-base px-3 py-2 text-xs font-medium text-content-secondary transition hover:bg-surface-hover hover:text-content-primary cursor-pointer"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" strokeWidth={1.75} />
+                Organizar Grid
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void handleLaunchAll()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border-strong bg-surface-overlay px-3.5 py-2 text-xs font-medium text-content-primary transition hover:bg-surface-hover cursor-pointer"
+              >
+                <Grid2x2 className="h-4 w-4 text-accent-hover" strokeWidth={1.75} />
+                Abrir todas em Grid
+              </button>
+            </>
           )}
 
           <button

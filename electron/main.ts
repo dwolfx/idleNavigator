@@ -42,6 +42,13 @@ function setupTray() {
         launcher.launchAllInGrid(state.instances, state.preferredBrowser, state.gridColumns);
       },
     },
+    {
+      label: 'Organizar janelas em Grid',
+      click: () => {
+        const state = store.getState();
+        void launcher.arrangeInGrid(state.preferredBrowser, state.gridColumns);
+      },
+    },
     { type: 'separator' },
     {
       label: 'Sair de verdade',
@@ -170,6 +177,11 @@ function registerIpcHandlers() {
   ipcMain.handle('instance:launchAllInGrid', () => {
     const state = store.getState();
     return launcher.launchAllInGrid(state.instances, state.preferredBrowser, state.gridColumns);
+  });
+
+  ipcMain.handle('windows:arrangeGrid', () => {
+    const state = store.getState();
+    return launcher.arrangeInGrid(state.preferredBrowser, state.gridColumns);
   });
 
   ipcMain.handle('instance:clearSession', (_event, id: string) => {

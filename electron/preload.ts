@@ -14,5 +14,6 @@ contextBridge.exposeInMainWorld('idleDock', {
   setMinimizeToTray: (enabled: boolean) => ipcRenderer.invoke('state:setMinimizeToTray', enabled),
   launchInstance: (id: string) => ipcRenderer.invoke('instance:launch', id),
   launchAllInGrid: () => ipcRenderer.invoke('instance:launchAllInGrid'),
+  arrangeGrid: () => ipcRenderer.invoke('windows:arrangeGrid'),
   clearSession: (id: string) => ipcRenderer.invoke('instance:clearSession', id),
 });

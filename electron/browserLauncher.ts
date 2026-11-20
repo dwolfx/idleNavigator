@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { app, screen } from 'electron';
 import type { BrowserId, GameInstance, GridColumnsPreference } from './store';
+import { arrangeBrowserWindowsInGrid, type ArrangeResult } from './windowArranger';
 
 export interface DetectedBrowser {
   id: BrowserId;
@@ -189,7 +190,27 @@ export class BrowserLauncher {
       }, index * 350);
     });
 
+    // Após as janelas subirem, força o posicionamento exato em Grid via Win32 SetWindowPos
+    const totalDelayMs = instances.length * 350 + 1400;
+    setTimeout(() => {
+      void this.arrangeInGrid(preferred, gridColumns);
+    }, totalDelayMs);
+
     return { ok: true };
+  }
+
+  async arrangeInGrid(
+    preferred: BrowserId | null,
+    gridColumns: GridColumnsPreference,
+  ): Promise<ArrangeResult> {
+    const browser = this.resolveBrowser(preferred);
+    if (!browser) {
+      return {
+        ok: false,
+        error: 'Nenhum navegador Chromium (Chrome, Edge ou Brave) encontrado no sistema.',
+      };
+    }
+    return arrangeBrowserWindowsInGrid(getUserDataRoot(browser.id), gridColumns);
   }
 
   clearSession(instanceId: string, preferred: BrowserId | null): { ok: boolean; error?: string } {

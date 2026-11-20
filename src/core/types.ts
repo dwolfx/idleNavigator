@@ -35,6 +35,7 @@ export interface UpdateInstanceInput {
 
 export interface LaunchResult {
   ok: boolean;
+  arrangedCount?: number;
   error?: string;
 }
 
@@ -49,6 +50,7 @@ export interface IdleNavigatorApi {
   setMinimizeToTray: (enabled: boolean) => Promise<void>;
   launchInstance: (id: string) => Promise<LaunchResult>;
   launchAllInGrid: () => Promise<LaunchResult>;
+  arrangeGrid: () => Promise<LaunchResult>;
   clearSession: (id: string) => Promise<LaunchResult>;
 }
 

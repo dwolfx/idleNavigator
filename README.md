@@ -25,6 +25,14 @@ npm run build
 npm start
 ```
 
+## Gerar executável Windows (`.exe`)
+
+```bash
+npm run dist
+```
+
+Os arquivos gerados ficam em `release/` (`IdleNavigator-Portable.exe` e o instalador NSIS).
+
 ## Testes
 
 ```bash
