@@ -6,13 +6,12 @@ import { normalizeGameUrl } from '../core/url';
 interface InstanceModalProps {
   initial?: GameInstance | null;
   onClose: () => void;
-  onSubmit: (data: { name: string; url: string; autoReload: boolean }) => Promise<void>;
+  onSubmit: (data: { name: string; url: string }) => Promise<void>;
 }
 
 export function InstanceModal({ initial, onClose, onSubmit }: InstanceModalProps) {
   const [name, setName] = useState(initial?.name ?? '');
   const [url, setUrl] = useState(initial?.url ?? '');
-  const [autoReload, setAutoReload] = useState(initial?.autoReload ?? true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -34,7 +33,7 @@ export function InstanceModal({ initial, onClose, onSubmit }: InstanceModalProps
 
     setSubmitting(true);
     try {
-      await onSubmit({ name: trimmedName, url: normalized, autoReload });
+      await onSubmit({ name: trimmedName, url: normalized });
       onClose();
     } finally {
       setSubmitting(false);
@@ -86,16 +85,6 @@ export function InstanceModal({ initial, onClose, onSubmit }: InstanceModalProps
               className="w-full rounded-lg border border-border-strong bg-surface-base px-3 py-2 text-xs text-content-primary placeholder:text-content-muted focus:border-accent focus:outline-none"
             />
           </div>
-
-          <label className="flex items-center gap-2.5 text-xs text-content-secondary cursor-pointer">
-            <input
-              type="checkbox"
-              checked={autoReload}
-              onChange={(e) => setAutoReload(e.target.checked)}
-              className="h-3.5 w-3.5 rounded border-border-strong accent-accent cursor-pointer"
-            />
-            Recarregar automaticamente em caso de queda ou erro
-          </label>
 
           {error && (
             <p className="rounded-lg bg-status-error/15 px-3 py-2 text-xs text-status-error">

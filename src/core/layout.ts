@@ -1,5 +1,19 @@
 export type GridColumnsPreference = 'auto' | 2 | 3;
 
+export interface WorkArea {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface WindowRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 /**
  * Resolve o número ideal de colunas do grid com base na quantidade de instâncias
  * e na preferência do usuário.
@@ -17,9 +31,31 @@ export function resolveGridColumns(
 }
 
 /**
- * Mantém o fator de zoom dentro dos limites seguros (50% a 150%).
+ * Calcula posição e tamanho de cada janela para preencher a área útil do monitor em Grid.
  */
-export function clampZoomFactor(factor: number): number {
-  const rounded = Math.round(factor * 100) / 100;
-  return Math.min(1.5, Math.max(0.5, rounded));
+export function calculateWindowGridRects(
+  count: number,
+  workArea: WorkArea,
+  preference: GridColumnsPreference = 'auto',
+): WindowRect[] {
+  if (count <= 0) return [];
+
+  const cols = resolveGridColumns(count, preference);
+  const rows = Math.ceil(count / cols);
+  const cellWidth = Math.floor(workArea.width / cols);
+  const cellHeight = Math.floor(workArea.height / rows);
+
+  const rects: WindowRect[] = [];
+  for (let i = 0; i < count; i++) {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    rects.push({
+      x: workArea.x + col * cellWidth,
+      y: workArea.y + row * cellHeight,
+      width: cellWidth,
+      height: cellHeight,
+    });
+  }
+
+  return rects;
 }

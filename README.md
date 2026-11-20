@@ -1,28 +1,26 @@
 # IdleNavigator
 
-Navegador desktop dedicado para jogos idle/incrementais de navegador, 100% local e open-source.
+Gerenciador desktop para jogos idle/incrementais de navegador com perfis isolados, modo app limpo e anti-throttling 24/7 — 100% local e open-source.
 
-## Recursos (MVP v1)
+## Como funciona
 
-- **Sessões isoladas e persistentes:** cada instância usa sua própria partição Chromium (`persist:instance-<id>`), mantendo cookies, `localStorage` e logins separados entre contas.
-- **Anti-throttling 24/7:** flags do Chromium + `backgroundThrottling: false` para manter loops, timers e farms rodando mesmo em segundo plano ou minimizado na bandeja do Windows.
-- **Modo Foco e Modo Grid:** visualize uma conta em tela cheia ou várias lado a lado (Auto, 2x ou 3x colunas).
-- **Controles por instância:** áudio/mute individual, zoom salvo (`50%` a `150%`), recarregar, voltar, auto-reload em caso de queda/erro, DevTools e limpeza de sessão (logout forçado).
-- **Atalhos rápidos:**
-  - `Ctrl + 1..9` — alterna entre instâncias
-  - `Ctrl + G` — alterna entre Foco e Grid
-  - `Ctrl + N` — adiciona nova instância
+O **IdleNavigator** orquestra instâncias reais do seu navegador Chromium oficial instalado no Windows (**Microsoft Edge**, **Google Chrome** ou **Brave**):
 
-## Desenvolvimento
+- **1 `--user-data-dir` + N `--profile-directory`:** todas as contas compartilham um único processo de GPU/rede (menor consumo de RAM), mantendo **cookies, `localStorage` e logins 100% isolados e persistentes**.
+- **Compatível com Google OAuth e Cloudflare Turnstile:** por usar o navegador oficial do sistema (e não uma WebView embutida), verificações anti-bot e login com Google funcionam normalmente.
+- **Modo `--app`:** cada jogo abre em janela limpa, sem barra de abas ou de endereço.
+- **Anti-throttling 24/7:** aplica `--disable-background-timer-throttling`, `--disable-renderer-backgrounding` e `--disable-backgrounding-occluded-windows`.
+- **Abrir todas em Grid:** calcula automaticamente a área útil do monitor e abre todas as instâncias lado a lado (`Auto`, `2 col` ou `3 col`).
+
+## Atalhos
+
+- `Ctrl + N` — criar nova instância
+- `Ctrl + Enter` — abrir todas as instâncias em Grid
+
+## Desenvolvimento e uso
 
 ```bash
 npm install
-npm run dev
-```
-
-## Build e execução local
-
-```bash
 npm run build
 npm start
 ```

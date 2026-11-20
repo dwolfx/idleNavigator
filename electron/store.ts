@@ -2,30 +2,26 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { app } from 'electron';
 
-export type ViewMode = 'focus' | 'grid';
+export type BrowserId = 'chrome' | 'edge' | 'brave';
+export type GridColumnsPreference = 'auto' | 2 | 3;
 
 export interface GameInstance {
   id: string;
   name: string;
   url: string;
-  muted: boolean;
-  zoomFactor: number;
-  autoReload: boolean;
   createdAt: number;
 }
 
 export interface AppState {
   instances: GameInstance[];
-  activeInstanceId: string | null;
-  viewMode: ViewMode;
-  gridColumns: 'auto' | 2 | 3;
+  preferredBrowser: BrowserId | null;
+  gridColumns: GridColumnsPreference;
   minimizeToTray: boolean;
 }
 
 const DEFAULT_STATE: AppState = {
   instances: [],
-  activeInstanceId: null,
-  viewMode: 'focus',
+  preferredBrowser: null,
   gridColumns: 'auto',
   minimizeToTray: true,
 };
@@ -47,9 +43,20 @@ export class StateStore {
       const raw = fs.readFileSync(this.filePath, 'utf-8');
       const parsed = JSON.parse(raw) as Partial<AppState>;
       return {
-        instances: Array.isArray(parsed.instances) ? parsed.instances : [],
-        activeInstanceId: parsed.activeInstanceId ?? null,
-        viewMode: parsed.viewMode === 'grid' ? 'grid' : 'focus',
+        instances: Array.isArray(parsed.instances)
+          ? parsed.instances.map((item) => ({
+              id: item.id,
+              name: item.name,
+              url: item.url,
+              createdAt: item.createdAt ?? Date.now(),
+            }))
+          : [],
+        preferredBrowser:
+          parsed.preferredBrowser === 'chrome' ||
+          parsed.preferredBrowser === 'edge' ||
+          parsed.preferredBrowser === 'brave'
+            ? parsed.preferredBrowser
+            : null,
         gridColumns:
           parsed.gridColumns === 2 || parsed.gridColumns === 3 ? parsed.gridColumns : 'auto',
         minimizeToTray: parsed.minimizeToTray ?? true,

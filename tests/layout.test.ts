@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { clampZoomFactor, resolveGridColumns } from '../src/core/layout';
+import { calculateWindowGridRects, resolveGridColumns } from '../src/core/layout';
 
-describe('Cálculo de colunas do grid e controle de zoom', () => {
+describe('Cálculo de colunas e posicionamento de janelas em Grid', () => {
   it('deve retornar 1 coluna quando houver 0 ou 1 instância', () => {
     expect(resolveGridColumns(0, 'auto')).toBe(1);
     expect(resolveGridColumns(1, 'auto')).toBe(1);
@@ -20,9 +20,17 @@ describe('Cálculo de colunas do grid e controle de zoom', () => {
     expect(resolveGridColumns(2, 3)).toBe(2);
   });
 
-  it('deve limitar o fator de zoom entre 50% e 150%', () => {
-    expect(clampZoomFactor(0.2)).toBe(0.5);
-    expect(clampZoomFactor(1.1)).toBe(1.1);
-    expect(clampZoomFactor(2.4)).toBe(1.5);
+  it('deve dividir a área útil do monitor em 4 quadrantes iguais para 4 instâncias', () => {
+    const rects = calculateWindowGridRects(
+      4,
+      { x: 0, y: 0, width: 1920, height: 1040 },
+      'auto',
+    );
+
+    expect(rects).toHaveLength(4);
+    expect(rects[0]).toEqual({ x: 0, y: 0, width: 960, height: 520 });
+    expect(rects[1]).toEqual({ x: 960, y: 0, width: 960, height: 520 });
+    expect(rects[2]).toEqual({ x: 0, y: 520, width: 960, height: 520 });
+    expect(rects[3]).toEqual({ x: 960, y: 520, width: 960, height: 520 });
   });
 });
